@@ -39,7 +39,6 @@ export class App extends Component {
     });
     this.fetchGallery(this.state.query, this.state.page + 1);
   };
-
   onClickImage = url => {
     this.setState({ showModal: true, largeImageURL: url });
   };
