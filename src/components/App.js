@@ -22,12 +22,21 @@ export class App extends Component {
     error: null,
   };
 
-  onSubmit = e => {
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.page !== prevState.page || this.state.query!== prevState.query ){
+      fetchHitsByQuery()
+    }
+
+    
+   }
+
+   onSubmit = e => {
     e.preventDefault();
     this.setState({
-      query: e.target.search.value,
+      query: e.target.search.value.trim(), 
       isLoading: true,
       images: [],
+    page: 1,
     });
     this.fetchGallery(e.target.search.value, this.state.page);
   };
@@ -46,6 +55,8 @@ export class App extends Component {
   onModalClose = () => {
     this.setState({ showModal: false, largeImageURL: '' });
   };
+
+
 
   async fetchGallery(query, page) {
     try {
