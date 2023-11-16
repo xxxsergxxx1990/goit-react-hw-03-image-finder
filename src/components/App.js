@@ -10,6 +10,12 @@ import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { fetchHitsByQuery } from '../services/api';
 
+
+
+
+
+
+
 export class App extends Component {
   state = {
     images: [],
@@ -24,11 +30,22 @@ export class App extends Component {
 
   componentDidUpdate(prevProps, prevState){
     if(this.state.page !== prevState.page || this.state.query!== prevState.query ){
+      try {
+      this.setState({ isLoading: true ,error:false});
       fetchHitsByQuery()
+      } catch (error) {
+        this.setState({error:true})
+      }finally{
+        this.setState({ isLoading: false });
+      }
     }
-
+    
     
    }
+
+
+  
+
 
    onSubmit = e => {
     e.preventDefault();
