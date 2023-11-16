@@ -10,12 +10,6 @@ import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { fetchHitsByQuery } from '../services/api';
 
-
-
-
-
-
-
 export class App extends Component {
   state = {
     images: [],
@@ -28,53 +22,21 @@ export class App extends Component {
     error: null,
   };
 
-  componentDidUpdate(prevProps, prevState){
-    if(this.state.page !== prevState.page || this.state.query!== prevState.query ){
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.page !== prevState.page ||
+      this.state.query !== prevState.query
+    ) {
       try {
-      this.setState({ isLoading: true ,error:false});
-      fetchHitsByQuery()
+        this.setState({ isLoading: true, error: false });
+        fetchHitsByQuery();
       } catch (error) {
-        this.setState({error:true})
-      }finally{
+        this.setState({ error: true });
+      } finally {
         this.setState({ isLoading: false });
       }
     }
-    
-    
-   }
-
-
-  
-
-
-   onSubmit = e => {
-    e.preventDefault();
-    this.setState({
-      query: e.target.search.value.trim(), 
-      isLoading: true,
-      images: [],
-    page: 1,
-    });
-    this.fetchGallery(e.target.search.value, this.state.page);
-  };
-
-  onNextPage = () => {
-    this.setState({
-      page: this.state.page + 1,
-      isLoading: true,
-    });
-    this.fetchGallery(this.state.query, this.state.page + 1);
-  };
-  onClickImage = url => {
-    this.setState({ showModal: true, largeImageURL: url });
-  };
-
-  onModalClose = () => {
-    this.setState({ showModal: false, largeImageURL: '' });
-  };
-
-
-
+  }
   async fetchGallery(query, page) {
     try {
       const response = await fetchHitsByQuery(query, page);
@@ -98,6 +60,31 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   }
+  onSubmit = e => {
+    e.preventDefault();
+    this.setState({
+      query: e.target.search.value.trim(),
+      isLoading: true,
+      images: [],
+      page: 1,
+    });
+    this.fetchGallery(e.target.search.value, this.state.page);
+  };
+
+  onNextPage = () => {
+    this.setState({
+      page: this.state.page + 1,
+      isLoading: true,
+    });
+    this.fetchGallery(this.state.query, this.state.page + 1);
+  };
+  onClickImage = url => {
+    this.setState({ showModal: true, largeImageURL: url });
+  };
+
+  onModalClose = () => {
+    this.setState({ showModal: false, largeImageURL: '' });
+  };
 
   render() {
     const { images, isLoading, showBtn, showModal, largeImageURL } = this.state;
