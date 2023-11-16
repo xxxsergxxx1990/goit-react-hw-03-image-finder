@@ -14,7 +14,7 @@ export class App extends Component {
   state = {
     images: [],
     query: '',
-    page: 0,
+    page: 1,
     isLoading: false,
     showBtn: false,
     showModal: false,
@@ -60,14 +60,19 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   }
+
   onSubmit = e => {
     e.preventDefault();
+    
     this.setState({
       query: e.target.search.value.trim(),
       isLoading: true,
       images: [],
       page: 1,
     });
+    if(this.state.query === ''){
+      return 
+    }
     this.fetchGallery(e.target.search.value, this.state.page);
   };
 
