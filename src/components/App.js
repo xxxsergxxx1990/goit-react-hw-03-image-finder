@@ -73,13 +73,7 @@ export class App extends Component {
    
   };
 
-  onNextPage = () => {
-    this.setState({
-      page: this.state.page + 1,
-      isLoading: true,
-    });
-    this.fetchGallery(this.state.query, this.state.page + 1);
-  };
+ 
   onClickImage = url => {
     this.setState({ showModal: true, largeImageURL: url });
   };
@@ -89,7 +83,7 @@ export class App extends Component {
   };
 
   render() {
-    const { images, isLoading, showBtn, showModal, largeImageURL } = this.state;
+    const { images, isLoading, showBtn, showModal, largeImageURL,error} = this.state;
 
     return (
       <div className={s.App}>
