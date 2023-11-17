@@ -99,7 +99,7 @@ export class App extends Component {
           (<ImageGallery images={images} onClickImage={this.onClickImage} />)
         }
 
-        {isLoading='true'  && <Loader />}
+        {isLoading && <Loader />}
         {error && <p>Something went wrong...</p>}
         {showBtn && !isLoading && images.length !== 0 && (
           <Button onNextPage={this.onNextPage} />
