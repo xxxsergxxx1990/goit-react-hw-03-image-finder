@@ -23,37 +23,28 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const {query, page } = this.state
     if (
       this.state.page !== prevState.page ||
       this.state.query !== prevState.query
     ) {
-      try {
-        this.setState({ isLoading: true, error: false });
-        fetchHitsByQuery();
-      } catch (error) {
-        this.setState({ error: true });
-      } finally {
-        this.setState({ isLoading: false });
-      }
+      this.fetchGallery(query, page)
     }
   }
   async fetchGallery(query, page) {
     try {
-      const response = await fetchHitsByQuery(query, page);
+      this.setState({ isLoading: true });
+      const { hits, totalHits } = await fetchHitsByQuery(query, page);
+
+      if (hits.length === 0) {
+     return   Notify.failure('No matches found!');
+      }
       this.setState(prevState => {
         return {
-          images: [...prevState.images, ...response],
+          images: [...prevState.images, ...hits],
+          showBtn: this.state.page < Math.ceil(totalHits / 12),
         };
       });
-      if (response.length < 12) {
-        this.setState({ showBtn: false });
-      }
-      if (response.length === 12) {
-        this.setState({ showBtn: true });
-      }
-      if (response.length === 0) {
-        Notify.failure('No matches found!');
-      }
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -63,17 +54,23 @@ export class App extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    
+    const value = e.target.search.value.trim()
+    if (!value) {
+      return Notify.failure('Can not be empty');
+    }
     this.setState({
-      query: e.target.search.value.trim(),
+      query: value,
       isLoading: true,
       images: [],
       page: 1,
     });
-    if(this.state.query === ''){
-      return 
-    }
-    this.fetchGallery(e.target.search.value, this.state.page);
+  };
+  onNextPage = () => {
+    this.setState(prevState=>({
+      page: prevState.page + 1,
+ 
+    }));
+   
   };
 
   onNextPage = () => {
@@ -97,9 +94,15 @@ export class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery images={images} onClickImage={this.onClickImage} />
+        {images.length !== 0 && 
+          (<ImageGallery images={images} onClickImage={this.onClickImage} />)
+        }
+
         {isLoading && <Loader />}
-        {showBtn && <Button onNextPage={this.onNextPage} />}
+        {error && <p>Something went wrong...</p>}
+        {showBtn && !isLoading && images.length !== 0 && (
+          <Button onNextPage={this.onNextPage} />
+        )}
         {showModal && (
           <Modal
             largeImageURL={largeImageURL}
@@ -107,6 +110,7 @@ export class App extends Component {
           />
         )}
       </div>
-    );
+    )
+  
   }
 }
