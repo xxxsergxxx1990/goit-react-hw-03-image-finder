@@ -94,11 +94,12 @@ export class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.onSubmit} />
+        
         {images.length !== 0 && 
           (<ImageGallery images={images} onClickImage={this.onClickImage} />)
         }
 
-        {isLoading && <Loader />}
+        {isLoading='true'  && <Loader />}
         {error && <p>Something went wrong...</p>}
         {showBtn && !isLoading && images.length !== 0 && (
           <Button onNextPage={this.onNextPage} />
